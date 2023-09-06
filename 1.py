@@ -29,6 +29,7 @@ result_alpha = alpha_matrix[len(alpha_matrix) - 1]
 vec = [vectors[0], vectors[1], vectors[2]]
 second_alpha = [(cross(vec[2], vec[1]) - result_alpha * cross(vec[1], vec[1])) / (
         cross(vec[1], vec[1]) - result_alpha * cross(vec[1], vec[0]))]
+
 while True:
 
     vec_size = len(vec)
