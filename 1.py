@@ -44,6 +44,7 @@ while True:
 
 # print(second_alpha)
 
+
 print('Первое собственное значение', result_alpha, 'Второе собственное значение', second_alpha[len(second_alpha) - 1],
       'Собственный вектор', norm_vec(vectors[len(vectors) - 1]), sep='\n')
 # print(matrix @ vectors[len(vectors) - 1])
