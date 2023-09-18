@@ -105,8 +105,31 @@ def find_2_real_eigenvalue(matrix):
           'Отрицательное собственное значение', -sqrt(result_alpha), sep='\n')
 
 
+def find_complex_pair(matrix):
+    vectors = [np.matrix('1; 1; 1'), matrix @ np.matrix('1; 1; 1'), matrix @ matrix @ np.matrix('1; 1; 1')]
+    for i in range(2000):
+        vectors.append(matrix @ vectors[len(vectors) - 1])
+    s = len(vectors) - 1
+    p = (vectors[s - 3][0] * vectors[s][0] - vectors[s - 2][0] * vectors[s - 1][0]) / (
+                vectors[s - 3][0] * vectors[s - 1][0] - vectors[s - 2][0] * vectors[s - 2][0])
+    q = (vectors[s - 3][0] * vectors[s][0] - vectors[s - 1][0] * vectors[s - 1][0]) / (
+                vectors[s - 3][0] * vectors[s - 1][0] - vectors[s - 2][0] * vectors[s - 2][0])
+    print((-p + sqrt(p * p - 4 * q)) / 2)
+    print((-p - sqrt(p * p - 4 * q)) / 2)
+
+def find_jordan_second(matrix):
+    vectors = [np.matrix('1; 1; 1'), matrix @ np.matrix('1; 1; 1'), matrix @ matrix @ np.matrix('1; 1; 1')]
+    for i in range(2000):
+        vectors.append(matrix @ vectors[len(vectors) - 1])
+    s = len(vectors) - 1
+    p = (vectors[s - 2][0] * vectors[s][1] - vectors[s - 2][1] * vectors[s][0]) / (
+                vectors[s - 2][0] * vectors[s - 1][1] - vectors[s - 2][1] * vectors[s - 1][0])
+    q = (vectors[s - 1][0] * vectors[s][1] - vectors[s - 1][1] * vectors[s][0]) / (
+                vectors[s - 2][0] * vectors[s - 1][1] - vectors[s - 2][1] * vectors[s - 1][0])
+    print(-p / 2)
 
 matrix = read_matrix()
+
 if find_real_eigenvalue(matrix) == 0:
     if find_2_real_eigenvalue(matrix) == 0:
         print("Ввод данных не корректен ")
