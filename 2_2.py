@@ -32,7 +32,7 @@ def check_correct_matrix(matrix):
         sum = 0
         for j in range(len(matrix)):
             sum += abs(matrix[i, j])
-        if sum >= abs(matrix[i, i]) == 0:
+        if sum >= 2 * abs(matrix[i, i]):
             print('Матрица не коректна')
             return 0
     return 1
@@ -70,8 +70,10 @@ def method(matrix, epsilon, B):
     print('Для данной матрицы метод Зейделя не работает')
 
 matrix = read_matrix()
+B = read_vector()
+B= np.linalg.inv(matrix) @ B
+matrix= np.linalg.inv(matrix) @ matrix
 if check_correct_matrix(matrix):
-    B = read_vector()
     method(matrix, epsilon, B)
 
 # 2, -0.1, 0.1; -0.1, 2, 0.1; 0.1, -0.1, 2
