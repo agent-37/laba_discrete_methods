@@ -80,14 +80,13 @@ epsilon = 0.00001
 
 def find_x_n(matrix, cur, B, s):
     ans = np.matrix(s)
-    print(cur)
     for i in range(len(matrix)):
         sum = 0
         for j in range(i):
             sum += matrix[i, j] * ans[j]
         for j in range(i + 1, len(matrix)):
             sum += matrix[i, j] * cur[j]
-        ans[i] = (sum + B[i]) / matrix[i, i]
+        ans[i] = (-sum + B[i]) / matrix[i, i]
     return ans
 
 
@@ -97,11 +96,7 @@ def method(matrix, epsilon, B):
         s = s + '; 0.0'
     vector_x = [np.matrix(s)]
     for i in range(1000):
-        print(i, find_x_n(matrix, vector_x[len(vector_x) - 1], B, s))
-
         vector_x.append(find_x_n(matrix, vector_x[len(vector_x) - 1], B, s))
-
-        print("--------------------------------------------------------------------------------")
         if np.linalg.norm(vector_x[len(vector_x) - 1] - vector_x[len(vector_x) - 2]) < epsilon:
             print("Решение =", vector_x[len(vector_x) - 1], "полученный на шаге", i)
             # print(vector_x[len(vector_x)-2])
