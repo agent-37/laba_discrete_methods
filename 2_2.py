@@ -71,9 +71,8 @@ def method(matrix, epsilon, B):
 
 matrix = read_matrix()
 B = read_vector()
-B= np.linalg.inv(matrix) @ B
-matrix= np.linalg.inv(matrix) @ matrix
-if check_correct_matrix(matrix):
-    method(matrix, epsilon, B)
+B= matrix.transpose() @ B
+matrix = matrix.transpose() @ matrix
+method(matrix, epsilon, B)
 
 # 2, -0.1, 0.1; -0.1, 2, 0.1; 0.1, -0.1, 2
