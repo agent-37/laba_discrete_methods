@@ -97,7 +97,9 @@ def method(matrix, epsilon, B):
     vector_x = [np.matrix(s)]
     for i in range(1000):
         vector_x.append(find_x_n(matrix, vector_x[len(vector_x) - 1], B, s))
-        if np.linalg.norm(vector_x[len(vector_x) - 1] - vector_x[len(vector_x) - 2]) < epsilon:
+        if np.linalg.norm(matrix) / abs(1.0 - np.linalg.norm(matrix)) * dist2(
+                vector_x[len(vector_x) - 1], vector_x[len(vector_x) - 2]) < epsilon:
+
             print("Решение =", vector_x[len(vector_x) - 1], "полученный на шаге", i)
             # print(vector_x[len(vector_x)-2])
             # print(np.linalg.norm(matrix))
