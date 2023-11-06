@@ -33,6 +33,45 @@ def read_vector():
     str = input("Введите матрицу в таком формате. Пример формата. 1.7; 0.3; 1.7\n")
     return np.matrix(str)
 
+def check_correct_matrix(matrix):
+    polinom = []
+    l = []
+    for i in range(len(matrix) + 1):
+        polinom.append(0)
+
+    def count_poly(deep):
+        if len(l) == len(matrix):
+            sum = 1
+            pos = 0
+            sign = 0
+            for i in range(len(matrix)):
+                sum *= matrix[i, l[i]]
+                if i >= l[i]:
+                    pos += 1
+            for i in range(len(matrix)):
+                for j in range(i + 1, len(matrix)):
+                    if l[i] > l[j]:
+                        sign += 1
+            polinom[len(polinom) - pos - 1] += sum * (-1) ** (sign)
+
+            return
+        for i in range(len(matrix)):
+            if i not in l:
+                l.append(i)
+                count_poly(deep + 1)
+                l.pop()
+
+    count_poly(0)
+    max1 = 0
+    print(polinom)
+    r = np.roots(polinom)
+    print(np.roots(polinom))
+    for i in range(len(r)):
+        max1 = max(max1, abs(r[i]).real)
+    if max1 < 0.8:
+        return 1
+    else:
+        return 0
 
 def check_correct_matrix(matrix):
     for i in range(len(matrix)):
@@ -73,9 +112,21 @@ def method(matrix, epsilon, B):
         # print(cross(buf, buf), sqrt(cross(buf, buf)).real, buf, alpha, mult_vec(buf, alpha))
 
 
-
 matrix = read_matrix()
 B = read_vector()
-method(matrix, epsilon, B)
-
+#check_correct_matrix(matrix)
+#B = matrix.transpose() @ B
+#matrix = matrix.transpose() @ matrix
+if (check_correct_matrix(matrix)):
+    method(matrix, epsilon, B)
+else:
+    B = matrix.transpose() @ B
+    matrix = matrix.transpose() @ matrix
+    if (check_correct_matrix(matrix)):
+        method(matrix, epsilon, B)
+    else:
+        print('Приводите к диагональному виду')
+        B = np.linalg.inv(matrix) @ B
+        matrix = np.linalg.inv(matrix) @  matrix
+        print(B)
 # 0, -0.1, 0.1; -0.1, 0, 0.1; 0.1, -0.1, 0
