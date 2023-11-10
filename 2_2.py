@@ -9,6 +9,43 @@ def dist(vec_a):
     a = sqrt(sum)
     return a.real
 
+def gauss_method(matrix, vector):
+    n = len(matrix)
+    for i in range(n):
+        max_el = abs(matrix[i, i])
+        max_row = i
+        for k in range(i + 1, n):
+            if abs(matrix[k, i]) > max_el:
+                max_el = abs(matrix[k, i])
+                max_row = k
+
+        # matrix[i], matrix[max_row] = matrix[max_row], matrix[i]
+        # vector[i], vector[max_row] = vector[max_row], vector[i]
+        if i != max_row:
+            matrix[i] = matrix[i] + matrix[max_row]
+            matrix[max_row] = matrix[i] - matrix[max_row]
+            matrix[i] = matrix[i] - matrix[max_row]
+
+            vector[i] = vector[i] + vector[max_row]
+            vector[max_row] = vector[i] - vector[max_row]
+            vector[i] = vector[i] - vector[max_row]
+        for k in range(i + 1, n):
+            c = -matrix[k, i] / matrix[i, i]
+            for j in range(i, n):
+                if i == j:
+                    matrix[k, j] = 0
+                else:
+                    matrix[k, j] += c * matrix[i, j]
+            vector[k] += c * vector[i]
+
+    x = vector
+    for i in range(n - 1, -1, -1):
+        x[i] = vector[i] / matrix[i, i]
+        for k in range(i - 1, -1, -1):
+            vector[k] -= matrix[k, i] * x[i]
+    return x
+
+
 
 def norm_vec(vec_a):
     '''Функция для нормализации вектора'''
@@ -117,11 +154,13 @@ def method(matrix, epsilon, B):
     print('Для данной матрицы метод Зейделя не работает')
 
 
+
 matrix = read_matrix()
 B = read_vector()
-#check_correct_matrix(matrix)
-#B = matrix.transpose() @ B
-#matrix = matrix.transpose() @ matrix
+# check_correct_matrix(matrix)
+# B = matrix.transpose() @ B
+# matrix = matrix.transpose() @ matrix
+ans = gauss_method(matrix, B)
 if (check_correct_matrix(matrix)):
     method(matrix, epsilon, B)
 else:
@@ -131,9 +170,7 @@ else:
         method(matrix, epsilon, B)
     else:
         print('Приводите к диагональному виду')
-        B = np.linalg.inv(matrix) @ B
-        matrix = np.linalg.inv(matrix) @  matrix
-        print(B)
+        print(ans)
 # 2, -0.1, 0.1; -0.1, 2, 0.1; 0.1, -0.1, 2
 
 

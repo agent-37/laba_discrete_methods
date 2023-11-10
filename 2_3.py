@@ -10,6 +10,43 @@ def dist(vec_a):
     return a.real
 
 
+def gauss_method(matrix, vector):
+    n = len(matrix)
+    for i in range(n):
+        max_el = abs(matrix[i, i])
+        max_row = i
+        for k in range(i + 1, n):
+            if abs(matrix[k, i]) > max_el:
+                max_el = abs(matrix[k, i])
+                max_row = k
+
+        # matrix[i], matrix[max_row] = matrix[max_row], matrix[i]
+        # vector[i], vector[max_row] = vector[max_row], vector[i]
+        if i != max_row:
+            matrix[i] = matrix[i] + matrix[max_row]
+            matrix[max_row] = matrix[i] - matrix[max_row]
+            matrix[i] = matrix[i] - matrix[max_row]
+
+            vector[i] = vector[i] + vector[max_row]
+            vector[max_row] = vector[i] - vector[max_row]
+            vector[i] = vector[i] - vector[max_row]
+        for k in range(i + 1, n):
+            c = -matrix[k, i] / matrix[i, i]
+            for j in range(i, n):
+                if i == j:
+                    matrix[k, j] = 0
+                else:
+                    matrix[k, j] += c * matrix[i, j]
+            vector[k] += c * vector[i]
+
+    x = vector
+    for i in range(n - 1, -1, -1):
+        x[i] = vector[i] / matrix[i, i]
+        for k in range(i - 1, -1, -1):
+            vector[k] -= matrix[k, i] * x[i]
+    return x
+
+
 def cross(vec_a, vec_b):
     sum = 0
     for i in range(len(vec_a)):
@@ -32,6 +69,7 @@ def read_matrix():
 def read_vector():
     str = input("Введите матрицу в таком формате. Пример формата. 1.7; 0.3; 1.7\n")
     return np.matrix(str)
+
 
 def check_correct_matrix(matrix):
     polinom = []
@@ -72,6 +110,7 @@ def check_correct_matrix(matrix):
         return 1
     else:
         return 0
+
 
 def check_correct_matrix(matrix):
     for i in range(len(matrix)):
@@ -114,9 +153,10 @@ def method(matrix, epsilon, B):
 
 matrix = read_matrix()
 B = read_vector()
-#check_correct_matrix(matrix)
-#B = matrix.transpose() @ B
-#matrix = matrix.transpose() @ matrix
+# check_correct_matrix(matrix)
+# B = matrix.transpose() @ B
+# matrix = matrix.transpose() @ matrix
+ans = gauss_method(matrix, B)
 if (check_correct_matrix(matrix)):
     method(matrix, epsilon, B)
 else:
@@ -126,7 +166,9 @@ else:
         method(matrix, epsilon, B)
     else:
         print('Приводите к диагональному виду')
-        B = np.linalg.inv(matrix) @ B
-        matrix = np.linalg.inv(matrix) @  matrix
-        print(B)
+        print(ans)
 # 0, -0.1, 0.1; -0.1, 0, 0.1; 0.1, -0.1, 0
+
+
+# 1.7 2.8 1.9; 2.1 3.4 1.8; 4.2 -1.7 1.3
+# 0.7;1.1; 2.8
