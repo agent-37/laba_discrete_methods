@@ -108,9 +108,9 @@ def check_correct_matrix(matrix):
 
     count_poly(0)
     max1 = 0
-    print(polinom)
+    #print(polinom)
     r = np.roots(polinom)
-    print(np.roots(polinom))
+    #print(np.roots(polinom))
     for i in range(len(r)):
         max1 = max(max1, abs(r[i]).real)
     if max1 < 0.8:
@@ -160,7 +160,9 @@ B = read_vector()
 # check_correct_matrix(matrix)
 # B = matrix.transpose() @ B
 # matrix = matrix.transpose() @ matrix
-ans = gauss_method(matrix, B)
+buf_matrix = matrix
+buf_B = B
+
 if (check_correct_matrix(matrix)):
     method(matrix, epsilon, B)
 else:
@@ -170,7 +172,7 @@ else:
         method(matrix, epsilon, B)
     else:
         print('Приводите к диагональному виду')
-        print(ans)
+        print(gauss_method(buf_matrix, buf_B))
 # 2, -0.1, 0.1; -0.1, 2, 0.1; 0.1, -0.1, 2
 
 

@@ -112,12 +112,7 @@ def check_correct_matrix(matrix):
         return 0
 
 
-def check_correct_matrix(matrix):
-    for i in range(len(matrix)):
-        if matrix[i, i] == 0:
-            print('Матрица не коректна')
-            return 1
-    return 0
+
 
 
 epsilon = 0.00001
@@ -156,7 +151,9 @@ B = read_vector()
 # check_correct_matrix(matrix)
 # B = matrix.transpose() @ B
 # matrix = matrix.transpose() @ matrix
-ans = gauss_method(matrix, B)
+buf_matrix = matrix
+buf_B = B
+
 if (check_correct_matrix(matrix)):
     method(matrix, epsilon, B)
 else:
@@ -166,7 +163,7 @@ else:
         method(matrix, epsilon, B)
     else:
         print('Приводите к диагональному виду')
-        print(ans)
+        print(gauss_method(buf_matrix, buf_B))
 # 0, -0.1, 0.1; -0.1, 0, 0.1; 0.1, -0.1, 0
 
 
