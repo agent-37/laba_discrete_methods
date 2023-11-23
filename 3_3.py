@@ -33,8 +33,8 @@ prev_vec = np.matrix('0.1;0')
 cur_vec = np.matrix('2; 50')
 
 step = 0
-eps = 0.0001
-while step < 1000 or abs(norm_max(cur_vec - prev_vec) / norm_max(prev_vec)) > eps:
+eps = 0.001
+while step < 10000 and abs(norm_max(cur_vec - prev_vec) / norm_max(prev_vec)) > eps:
     prev_vec = cur_vec
     cur_vec = cur_vec - revers_w(cur_vec) @ func(cur_vec)
     # print(cur_vec, revers_w(cur_vec),func(cur_vec))
