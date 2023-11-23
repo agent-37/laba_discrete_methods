@@ -12,28 +12,31 @@ def norm_max(vec_a):
 
 
 def revers_w(vec):
-    x, y = vec[0,0], vec[1,0]
-    matr = np.matrix('1 1; 1 1')
-    matr[0, 0] = 2 * y / (2 * y * cos(x + y) - 2 * x * cos(y + x) - 11 / 5 * y)
-    matr[0, 1] = -cos(y + x) / (2 * y * cos(y + x) - 2 * x * cos(y + x) - 11 / 5 * y)
-    matr[1, 0] = -2 * x / (2 * y * cos(y + x) - 2 * x * cos(y + x) - 11 / 5 * y)
-    matr[1, 1] = (cos(y + x) - 11 / 10) / (2 * y * cos(y + x) - 2 * x * cos(y + x) - 11 / 5 * y)
+    x, y = vec[0, 0], vec[1, 0]
+    buf = (-sin(x - 1) * sin(y) - 1).real
+    matr = np.matrix('1.0 1; 1 1')
+    matr[0, 0] = sin(y).real / buf
+    matr[0, 1] = -1 / buf
+    matr[1, 0] = -1 / buf
+    matr[1, 1] = -sin(x - 1).real / buf
+    # print(matr)
     return matr
 
 
 def func(vec):
-    x, y = vec[0], vec[1]
-    return np.matrix(((sin(x[0, 0] + y[0, 0]) - 1.1 * x[0, 0] - 0.1).real,
-                      (x[0, 0] * x[0, 0] + y[0, 0] * y[0, 0] - 1).real)).transpose()
+    x, y = vec[0, 0], vec[1, 0]
+    return np.matrix(((cos(x - 1) + y - 0.5).real,
+                      (x - cos(y) - 3).real)).transpose()
 
 
 prev_vec = np.matrix('0.1;0')
-cur_vec = np.matrix('0.6;0.8')
+cur_vec = np.matrix('2; 50')
 
 step = 0
 eps = 0.0001
 while step < 1000 or abs(norm_max(cur_vec - prev_vec) / norm_max(prev_vec)) > eps:
     prev_vec = cur_vec
     cur_vec = cur_vec - revers_w(cur_vec) @ func(cur_vec)
+    # print(cur_vec, revers_w(cur_vec),func(cur_vec))
     step += 1
 print(step, cur_vec)
