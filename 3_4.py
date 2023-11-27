@@ -62,8 +62,8 @@ def cross(a, b):
 
 def find_lambda(vec):
     x, y = vec[0, 0], vec[1, 0]
-    return cross(vec, w(vec) @ transponse_w(vec) @ vec) / cross(w(vec) @ transponse_w(vec) @ vec,
-                                                                w(vec) @ transponse_w(vec) @ vec)
+    return cross(vec, w(vec) @ w(vec).transpose() @ vec) / cross(w(vec) @ w(vec).transpose() @ vec,
+                                                                w(vec) @ w(vec).transpose() @ vec)
 
 
 prev_vec = np.matrix('10.1;0')
@@ -73,7 +73,7 @@ step = 0
 eps = 0.001
 while step < 1000 and abs(norm_max(cur_vec - prev_vec) / norm_max(prev_vec)) > eps:
     prev_vec = cur_vec
-    cur_vec = cur_vec - find_lambda(cur_vec) * transponse_w(cur_vec) @ func(cur_vec)
+    cur_vec = cur_vec - find_lambda(cur_vec) * w(cur_vec).transpose() @ func(cur_vec)
     # print(cur_vec, revers_w(cur_vec),func(cur_vec))
     step += 1
 if fi(cur_vec) > 0.2:

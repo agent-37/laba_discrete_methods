@@ -3,7 +3,7 @@ from cmath import sin, log
 
 def func(x):
     # Функция данная в условии
-    return (x * log(x)-1.5  ).real
+    return (x * log(x) - 1.5).real
 
 
 def find_new_x(l, r, sign, cur_x):

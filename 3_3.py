@@ -11,14 +11,14 @@ def norm_max(vec_a):
     return buf_max.real
 
 
-def revers_w(vec):
+
+def w(vec):
     x, y = vec[0, 0], vec[1, 0]
-    buf = (-sin(x - 1) * sin(y) - 1).real
     matr = np.matrix('1.0 1; 1 1')
-    matr[0, 0] = sin(y).real / buf
-    matr[0, 1] = -1 / buf
-    matr[1, 0] = -1 / buf
-    matr[1, 1] = -sin(x - 1).real / buf
+    matr[0, 0] = -sin(x - 1).real
+    matr[0, 1] = 1
+    matr[1, 0] = 1
+    matr[1, 1] = sin(y).real
     # print(matr)
     return matr
 
@@ -36,7 +36,7 @@ step = 0
 eps = 0.001
 while step < 10000 and abs(norm_max(cur_vec - prev_vec) / norm_max(prev_vec)) > eps:
     prev_vec = cur_vec
-    cur_vec = cur_vec - revers_w(cur_vec) @ func(cur_vec)
+    cur_vec = cur_vec - np.linalg.inv(w(cur_vec)) @ func(cur_vec)
     # print(cur_vec, revers_w(cur_vec),func(cur_vec))
     step += 1
 print(step, cur_vec)
