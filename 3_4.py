@@ -1,82 +1,59 @@
 from cmath import cos, sin
-
+from sympy import sin, cos, Matrix, diff, solve, N
 import numpy as np
+from sympy.abc import x, y, t
 
 
-def norm_max(vec_a):
-    '''Функция для нормализации вектора'''
-    buf_max = 0
-    for i in range(len(vec_a)):
-        buf_max = max(buf_max, abs(vec_a[i]))
-    return buf_max.real
+def func():
+    return Matrix([cos(x - 1) + y - 0.5, x - cos(y) - 3])
 
 
-def revers_w(vec):
-    x, y = vec[0, 0], vec[1, 0]
-    buf = (-sin(x - 1) * sin(y) - 1).real
-    matr = np.matrix('1.0 1; 1 1')
-    matr[0, 0] = sin(y).real / buf
-    matr[0, 1] = -1 / buf
-    matr[1, 0] = -1 / buf
-    matr[1, 1] = -sin(x - 1).real / buf
-    # print(matr)
-    return matr
+def fi():
+    buf = Matrix([cos(x - 1) + y - 0.5, x - cos(y) - 3])
+    return N(buf[0] ** 2 + buf[1] ** 2)
 
 
-def w(vec):
-    x, y = vec[0, 0], vec[1, 0]
-    matr = np.matrix('1.0 1; 1 1')
-    matr[0, 0] = -sin(x - 1).real
-    matr[0, 1] = 1
-    matr[1, 0] = 1
-    matr[1, 1] = sin(y).real
-    # print(matr)
-    return matr
+def g(vec):
+    dp_fi_x = N(diff(fi(), x).limit(x, vec[0, 0]).limit(y, vec[1, 0]), 2)
+    dp_fi_y = N(diff(fi(), y).limit(x, vec[0, 0]).limit(y, vec[1, 0]), 2)
+    print(dp_fi_x, dp_fi_y)
+    x1 = N(vec[0, 0] - t * dp_fi_x, 2)
+    y1 = N(vec[1, 0] - t * dp_fi_y, 2)
+    print(x1, y1, fi())
+    g_t = N(fi().limit(x, x1).limit(y, y1), 2)
+
+    return g_t
 
 
-def transponse_w(vec):
-    x, y = vec[0, 0], vec[1, 0]
-    matr = np.matrix('1.0 1; 1 1')
-    matr[0, 0] = -sin(x - 1).real
-    matr[0, 1] = 1
-    matr[1, 0] = 1
-    matr[1, 1] = sin(y).real
-    # print(matr)
-    return matr
-
-
-def func(vec):
-    x, y = vec[0, 0], vec[1, 0]
-    return np.matrix(((cos(x - 1).real + y - 0.5),
-                      (x - cos(y).real - 3).real)).transpose()
-
-
-def fi(vec):
-    x, y = vec[0, 0], vec[1, 0]
-    return (cos(x - 1).real + y - 0.5) ** 2 + (x - cos(y).real - 3) ** 2
-
-
-def cross(a, b):
-    return (a[0, 0] * b[0, 0] + a[1, 0] * b[1, 0]).real
-
-
-def find_lambda(vec):
-    x, y = vec[0, 0], vec[1, 0]
-    return cross(vec, w(vec) @ w(vec).transpose() @ vec) / cross(w(vec) @ w(vec).transpose() @ vec,
-                                                                w(vec) @ w(vec).transpose() @ vec)
+def find_dot_dp_g(vec):
+    res = g(vec)
+    dp_g = N(diff(res, t), 2)
+    print('Here', dp_g)
+    # Как решить это уравнение нужно первое решение большее 0 ????
+    dots = solve(dp_g, t)
+    if len(dots) == 0:
+        print('Something happened')
+    else:
+        # Нужно найти не первый dot[0] а первый положительный то есть dot[i]>0
+        dp_fi_x = N(diff(fi(), x).limit(x, vec[0, 0]).limit(y, vec[1, 0]))
+        dp_fi_y = N(diff(fi(), y).limit(x, vec[0, 0]).limit(y, vec[1, 0]))
+        return Matrix([vec[0, 0] - dots[0] * dp_fi_x, vec[1, 0] - dots[0] * dp_fi_y])
 
 
 prev_vec = np.matrix('10.1;0')
 cur_vec = np.matrix('3.0; 1')
 
-step = 0
-eps = 0.001
-while step < 1000 and abs(norm_max(cur_vec - prev_vec) / norm_max(prev_vec)) > eps:
-    prev_vec = cur_vec
-    cur_vec = cur_vec - find_lambda(cur_vec) * w(cur_vec).transpose() @ func(cur_vec)
-    # print(cur_vec, revers_w(cur_vec),func(cur_vec))
-    step += 1
-if fi(cur_vec) > 0.2:
-    print('Wrong dot')
-else:
-    print(step, cur_vec)
+print(find_dot_dp_g(Matrix([3.034, -0.093])))
+
+#
+# step = 0
+# eps = 0.001
+# while step < 1000 and abs(norm_max(cur_vec - prev_vec) / norm_max(prev_vec)) > eps:
+#     prev_vec = cur_vec
+#     cur_vec = cur_vec - find_lambda(cur_vec) * w(cur_vec).transpose() @ func(cur_vec)
+#     # print(cur_vec, revers_w(cur_vec),func(cur_vec))
+#     step += 1
+# if fi(cur_vec) > 0.2:
+#     print('Wrong dot')
+# else:
+#     print(step, cur_vec)
