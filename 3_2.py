@@ -8,7 +8,8 @@ import scipy
 
 def func(x):
     # Функция данная в условии
-    return (x-1+1/2*np.e**x).real
+    return (x - 1 + 1 / 2 * np.e ** x).real
+    #return (5 * x - np.e ** x).real
 
 
 def func_pd_n(x, step):
@@ -18,8 +19,8 @@ def func_pd_n(x, step):
 
 def check(l, r):
     flag_neg, flag_pos = 0, 0
-    eps = 0.00001
-    help=100000
+    eps = 0.001
+    help = 100000
     for i in range(help):
         if abs(func_pd_n(l + (r - l) / help * i, 1)) < eps:
             return False
@@ -35,7 +36,6 @@ def check(l, r):
 
 def find_new_x(cur_x):
     return cur_x - func(cur_x) / func_pd_n(cur_x, 1)
-
 
 
 print('Введите отрезок на котором хотите найти корень')

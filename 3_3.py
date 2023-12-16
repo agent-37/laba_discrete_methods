@@ -7,7 +7,7 @@ from sympy.abc import x, y
 def norm_max(vec_a):
     '''Функция для нормализации вектора'''
     buf_max = 0
-    #print(vec_a)
+    # print(vec_a)
     for i in range(len(vec_a)):
         buf_max = max(buf_max, abs(vec_a[i]))
     return buf_max
@@ -22,17 +22,16 @@ def w(vec):
 def func():
     # return np.matrix(((cos(x - 1) + y - 0.5).real,
     #                   (x - cos(y) - 3).real)).transpose()
-    return Matrix([cos(y - 1) + x - 0.8, y - cos(x) - 2])
+    # return Matrix([cos(y - 1) + x - 0.8, y - cos(x) - 2])
+    return Matrix([cos(x - 1) + y - 0.5, x - cos(y) - 3])
 
 
 def colculate_func(vec):
     return func().limit(x, vec[0, 0]).limit(y, vec[1, 0])
 
 
-
-prev_vec = Matrix([0.1,0])
+prev_vec = Matrix([0.1, 0])
 cur_vec = Matrix([1.0, 1.0])
-
 
 step = 0
 eps = 0.0000001
