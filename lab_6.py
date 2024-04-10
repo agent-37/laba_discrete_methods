@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 def f(x):
-    return -2 * x
+    return sin(x).real
 
 
 # def s_solve(Y, x):
@@ -43,39 +43,43 @@ def gaus(matrix, b):
 
 def y(x):
     global c1, c2
-    return c1 / e ** x + c2 / e ** (3 * x) - 2 * x / 3 + 8 / 9
+    return sin(x) / 10 + 3 / 10 * cos(x) + c1 * e ** (2 * x) + c2 * e ** x
+
+
+def rec(pos, q_i, phi_i):
+    global ans, n, p, q, h, a
+    if pos == n:
+        global X2, mu2
+        y_n = (mu2 + X2 * phi_i) / (1 + q_i * X2)
+        ans.append(y_n)
+        print(pos, y_n)
+        return y_n
+    e_i, d_i, g_ii = 1 + p * h, -2 - p * h + q * h ** 2, h ** 2 * f(a + (pos + 1) * h)
+    q_ii = -e_i / (q_i + d_i)
+    phi_ii = (g_ii - phi_i) / (q_i + d_i)
+    y_ii = rec(pos + 1, q_ii, phi_ii)
+    y_i = y_ii * q_i + phi_i
+    ans.append(y_i)
+    print(pos, y_i)
+    return y_i
 
 
 n = 20
-a, b = 1, 2
+a, b = 0, 1
 h = (b - a) / n
-alp1, beta1, gamma1 = 0, 1, 0
-alp2, beta2, gamma2 = -1, 1, 1
-p, q = 4, 3
-c1, c2 = 1.15925231190463, 7.318712771423379
-matrix = []
-b = []
-for i in range(1, n):
-    buf = [0 for j in range(n + 1)]
-    buf[i - 1] = 1
-    buf[i] = -2 - p * h + q * h ** 2
-    buf[i + 1] = 1 + p * h
-    # print(buf)
-    matrix.append(buf)
-    b.append(f(a + i * h) * h ** 2)
-buf1, buf2 = [0 for j in range(n + 1)], [0 for j in range(n + 1)]
-buf1[0] = 1
-buf1[1] = beta1 / (h*(alp1 - beta1 / h))
-matrix.append(buf1)
-b.append(gamma1/(alp1 - beta1 / h))
+alp1, beta1, gamma1 = 1, 2, -1
+alp2, beta2, gamma2 = 0, 1, 1
+p, q = -3, 2
+c1, c2 = 0.2495746688213849, -0.9159577813689748
 
-buf2[n] = 1
-buf2[n - 1] = -beta2 / (h*(alp2 + beta2 / h))
-matrix.append(buf2)
-b.append(gamma2/(alp2 + beta2 / h))
-
+q0, phi0 = -beta1 / (h * (alp1 + beta1 / h)), gamma1 / (alp1 + beta1 / h)
+# q0, phi0 = beta1 / (h * (alp1 + beta1 / h)), beta1 / (h * (alp1 + beta1 / h))
+X2, mu2 = beta2 / (h * (alp2 - beta2 / h)), gamma2 / (alp2 - beta2 / h)
 tim = [a + i * h for i in range(n + 1)]
-ans = gaus(matrix, b)
+ans = []
+rec(0, q0, phi0)
+ans.reverse()
+print(ans)
 # print(ans)
 plt.plot(tim, ans)
 y1 = [y(a + i * h) for i in range(n + 1)]
