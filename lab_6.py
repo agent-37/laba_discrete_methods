@@ -46,25 +46,26 @@ def y(x):
     return sin(x) / 10 + 3 / 10 * cos(x) + c1 * e ** (2 * x) + c2 * e ** x
 
 
-def rec(pos, q_i, phi_i):
+def rec(pos, q_i, phi_i, q_i_1, phi_i_1):
     global ans, n, p, q, h, a
     if pos == n:
         global X2, mu2
-        y_n = (mu2 + X2 * phi_i) / (1 + q_i * X2)
+        # print(q_i,q_i_1,phi_i,phi_i_1,'!!!!')
+        y_n = (mu2 + X2 * phi_i_1) / (1 + q_i_1 * X2)
         ans.append(y_n)
         print(pos, y_n)
         return y_n
     e_i, d_i, g_ii = 1 + p * h, -2 - p * h + q * h ** 2, h ** 2 * f(a + (pos + 1) * h)
     q_ii = -e_i / (q_i + d_i)
     phi_ii = (g_ii - phi_i) / (q_i + d_i)
-    y_ii = rec(pos + 1, q_ii, phi_ii)
+    y_ii = rec(pos + 1, q_ii, phi_ii, q_i, phi_i)
     y_i = y_ii * q_i + phi_i
     ans.append(y_i)
     print(pos, y_i)
     return y_i
 
 
-n = 20
+n = 200
 a, b = 0, 1
 h = (b - a) / n
 alp1, beta1, gamma1 = 1, 2, -1
@@ -72,15 +73,30 @@ alp2, beta2, gamma2 = 0, 1, 1
 p, q = -3, 2
 c1, c2 = 0.2495746688213849, -0.9159577813689748
 
-q0, phi0 = -beta1 / (h * (alp1 + beta1 / h)), gamma1 / (alp1 + beta1 / h)
+# q0, phi0 = -beta1 / (h * (alp1 - beta1 / h)), gamma1 / (alp1 - beta1 / h)
 # q0, phi0 = beta1 / (h * (alp1 + beta1 / h)), beta1 / (h * (alp1 + beta1 / h))
-X2, mu2 = beta2 / (h * (alp2 - beta2 / h)), gamma2 / (alp2 - beta2 / h)
+# X2, mu2 = beta2 / (h * (alp2 + beta2 / h)), gamma2 / (alp2 + beta2 / h)
 tim = [a + i * h for i in range(n + 1)]
-ans = []
-rec(0, q0, phi0)
-ans.reverse()
-print(ans)
+# ans = []
+# rec(0, q0, phi0, 0, 0)
+# ans.reverse()
 # print(ans)
+# print(ans)
+# plt.plot(tim, ans)
+matrix = [[0 for j in range(n + 1)] for i in range(n + 1)]
+b = [0 for i in range(n + 1)]
+for i in range(1, n):
+    matrix[i][i - 1] = 1 / h ** 2
+    matrix[i][i] = -2 / (h ** 2) - p / h + q
+    matrix[i][i + 1] = 1 / (h ** 2) + p / h
+    b[i] = f(a + i * h)
+b[0] = gamma1
+matrix[0][0] = alp1 - beta1 / h
+matrix[0][1] = beta1 / h
+b[n] = gamma2
+matrix[n][n] = alp2 + beta2 / h
+matrix[n][n - 1] = -beta2 / h
+ans = gaus(matrix, b)
 plt.plot(tim, ans)
 y1 = [y(a + i * h) for i in range(n + 1)]
 plt.plot(tim, y1)
