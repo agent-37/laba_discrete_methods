@@ -50,7 +50,6 @@ def grad(vec):
 def norm_max(a):
     return max(abs(a[0, 0]), abs(a[1, 0]))
 
-
 prev_vec = Matrix([10.1, 0])
 cur_vec = Matrix([3.0, 1])
 
