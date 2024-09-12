@@ -13,6 +13,7 @@ def fi():
     return N(buf[0] ** 2 + buf[1] ** 2)
 
 
+
 def g(vec):
     dp_fi_x = N(diff(fi(), x).limit(x, vec[0, 0]).limit(y, vec[1, 0]), 2)
     dp_fi_y = N(diff(fi(), y).limit(x, vec[0, 0]).limit(y, vec[1, 0]), 2)
